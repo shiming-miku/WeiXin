@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shiming.weixin.dao.DmzjDAO">
+    <resultMap type="dmzj" id="dmzj">
+        <result column="time" property="time" jdbcType="VARCHAR" />
+        <result column="title" property="title" jdbcType="VARCHAR" />
+        <result column="cover" property="cover" jdbcType="VARCHAR" />
+        <result column="url" property="url" jdbcType="VARCHAR" />
+        <result column="author" property="author" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <select id="listFive" resultType="dmzj">
+        select time,title,cover,url,author from dmzj order by time desc LIMIT 0,10
+    </select>
+
+</mapper>
