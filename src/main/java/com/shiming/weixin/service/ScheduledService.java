@@ -48,7 +48,7 @@ public class ScheduledService extends AbstractService {
 
 	@Scheduled(cron = "0 0 17 * * ?")
 	public void scheduled(){
-		logger.info("使用cron自动发送群发信息{}",sdf.format(Calendar.getInstance().getTime()));
+		logger.info("使用cron自动发送群发信息{}", sdf.format(Calendar.getInstance().getTime()));
 		try {
 			WxMpService wxMpService = WxMpConfiguration.getMpServices().get(properties.getConfigs().get(0).getAppId());
 			WxMpMassNews news = new WxMpMassNews();
@@ -119,7 +119,15 @@ public class ScheduledService extends AbstractService {
 				}
 			}
 			// 预览群发
-			WxMpMassUploadResult massUploadResult = wxMpService.getMassMessageService().massNewsUpload(news);
+			WxMpMassUploadResult massUploadResult = null;
+			while (true) {
+				try {
+					massUploadResult = wxMpService.getMassMessageService().massNewsUpload(news);
+					break;
+				} catch (WxErrorException e) {
+					this.logger.debug("上传news出错再次上传:{}", sdf.format(Calendar.getInstance().getTime()));
+				}
+			}
 			WxMpMassPreviewMessage massPreviewMessage = new WxMpMassPreviewMessage();
 			massPreviewMessage.setMsgType(WxConsts.MassMsgType.MPNEWS);
 			massPreviewMessage.setMediaId(massUploadResult.getMediaId());
@@ -130,9 +138,10 @@ public class ScheduledService extends AbstractService {
 			WxMpMassSendResult massResultOther = wxMpService.getMassMessageService().massMessagePreview(massPreviewMessage);
 			this.logger.debug("群发结果2:" + massResultOther.getErrorMsg());
 		} catch (IOException e) {
-			e.printStackTrace();
+			this.logger.debug("群发错误:" + e.getMessage());
 		} catch (WxErrorException e) {
-			e.printStackTrace();
+			this.logger.debug("群发出错2:" + e.getMessage());
+			this.logger.debug("群发出错2:再次重发");
 		}
 	}
 }
