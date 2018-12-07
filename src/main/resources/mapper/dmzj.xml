@@ -11,8 +11,9 @@
         <result column="author" property="author" jdbcType="VARCHAR" />
     </resultMap>
 
-    <select id="listFive" resultType="dmzj">
-        select time,title,cover,url,author from dmzj order by time desc LIMIT 0,10
+    <select id="listFive" resultType="dmzj" parameterType="string">
+        select time,title,cover,url,author from dmzj where substr(time, 1, 10) = #{_parameter} order by time desc LIMIT
+        0,10
     </select>
 
 </mapper>

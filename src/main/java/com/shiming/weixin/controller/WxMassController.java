@@ -15,6 +15,8 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -62,7 +64,8 @@ public class WxMassController {
     @RequestMapping(value="/testDao.html",method = RequestMethod.POST)
     @ResponseBody
     public String testDao(){
-        List<Dmzj> dmzjList = dmzjDAO.listFive();
+        SimpleDateFormat sdfmy = new SimpleDateFormat("yyyy-MM-dd");
+        List<Dmzj> dmzjList = dmzjDAO.listFive(sdfmy.format(Calendar.getInstance().getTime()));
         for (Dmzj dmzj:dmzjList) {
             System.out.println(dmzj.toString());
         }

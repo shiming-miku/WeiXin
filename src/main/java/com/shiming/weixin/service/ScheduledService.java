@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
@@ -36,6 +37,8 @@ import java.util.List;
  */
 @Component
 public class ScheduledService extends AbstractService {
+
+	private SimpleDateFormat sdfmy = new SimpleDateFormat("yyyy-MM-dd");
 
 	@Autowired
 	private WxMpProperties properties;
@@ -53,7 +56,7 @@ public class ScheduledService extends AbstractService {
 			WxMpService wxMpService = WxMpConfiguration.getMpServices().get(properties.getConfigs().get(0).getAppId());
 			WxMpMassNews news = new WxMpMassNews();
 			WxMediaUploadResult uploadMediaRes = null;
-			List<Dmzj> dmzjList = dmzjDAO.listFive();
+			List<Dmzj> dmzjList = dmzjDAO.listFive(sdfmy.format(Calendar.getInstance().getTime()));
 			for(Dmzj dmzj:dmzjList){
 				boolean tmpFlg = dmzj.getTitle().contains("美图推荐")||dmzj.getTitle().contains("【原创】")||dmzj
 						.getTitle().contains("【每日一问】")||dmzj.getTitle().contains("【同人】")||dmzj.getTitle()
@@ -69,7 +72,7 @@ public class ScheduledService extends AbstractService {
 				uc.connect();
 				InputStream iputstream = uc.getInputStream();
 				// 打印文件长度
-				System.out.println("file size is:"+uc.getContentLength());
+				this.logger.info("file size is:{}", uc.getContentLength());
 				// 上传图文消息的封面图片
 				uploadMediaRes = wxMpService.getMaterialService().mediaUpload(WxConsts.MassMsgType.IMAGE, "jpg",
 						iputstream);
@@ -94,21 +97,22 @@ public class ScheduledService extends AbstractService {
 						ucContent.setDoInput(true);
 						ucContent.connect();
 						contentIputstream = ucContent.getInputStream();
-						File tmpFile = new File("/weixin/tmp/"+(++i)+".jpg");
+						File tmpFile = new File("/weixin/tmp/" + (++i) +".jpg");
 						// 打印文件长度
-						System.out.println("file size is2:"+uc.getContentLength());
+						this.logger.info("file size is2:{}", uc.getContentLength());
 						FileUtils.copyToFile(contentIputstream, tmpFile);
 						// 上传图文消息的正文图片(返回的url拼在正文的<img>标签中)
 						try {
 							WxMediaImgUploadResult imagedMediaRes = wxMpService.getMaterialService().
 									mediaImgUpload(tmpFile);
-							article.setContent(article.getContent()+"<img src="+imagedMediaRes.getUrl()+"><br>");
+							article.setContent(article.getContent() + "<img src=" + imagedMediaRes.getUrl() + "><br>");
 						} catch (WxErrorException e) {
-							System.out.println("上传正文图片出错");
+							this.logger.error("上传正文图片出错{}", e.getMessage());
 						}
 					} catch (IOException e) {
-						article.setContent(article.getContent()+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+content.getText()
-								+"<br>");
+						this.logger.info("获取的是正文，不是图片，拼接正文");
+						article.setContent(article.getContent() + P_STYLE_START + content.getText() + P_STYLE_END
+							+ "<br>");
 					}
 
 				}
@@ -120,12 +124,16 @@ public class ScheduledService extends AbstractService {
 			}
 			// 预览群发
 			WxMpMassUploadResult massUploadResult = null;
-			while (true) {
-				try {
-					massUploadResult = wxMpService.getMassMessageService().massNewsUpload(news);
-					break;
-				} catch (WxErrorException e) {
-					this.logger.debug("上传news出错再次上传:{}", sdf.format(Calendar.getInstance().getTime()));
+			if (news.getArticles().size() != 0) {
+				for (int i = 0; i < SIZE; i++) {
+					try {
+						massUploadResult = wxMpService.getMassMessageService().massNewsUpload(news);
+						break;
+					} catch (WxErrorException e) {
+						this.logger.warn("wxError捕获上传news出错再次上传:{}", sdf.format(Calendar.getInstance().getTime()));
+					} catch (Exception e){
+						this.logger.warn("catch捕获上传news出错再次上传:{}", sdf.format(Calendar.getInstance().getTime()));
+					}
 				}
 			}
 			WxMpMassPreviewMessage massPreviewMessage = new WxMpMassPreviewMessage();
@@ -133,15 +141,14 @@ public class ScheduledService extends AbstractService {
 			massPreviewMessage.setMediaId(massUploadResult.getMediaId());
 			massPreviewMessage.setToWxUserOpenid("oJ6Mw1U4RIp5F3LRO8DPL_AxTjn8");
 			WxMpMassSendResult massResult = wxMpService.getMassMessageService().massMessagePreview(massPreviewMessage);
-			this.logger.debug("群发结果1:" + massResult.getErrorMsg());
+			this.logger.info("群发结果1:{}", massResult.getErrorMsg());
 			massPreviewMessage.setToWxUserOpenid("oJ6Mw1b21hOfBVkb3MrNYasVItWw");
 			WxMpMassSendResult massResultOther = wxMpService.getMassMessageService().massMessagePreview(massPreviewMessage);
-			this.logger.debug("群发结果2:" + massResultOther.getErrorMsg());
+			this.logger.info("群发结果2:{}", massResultOther.getErrorMsg());
 		} catch (IOException e) {
-			this.logger.debug("群发错误:" + e.getMessage());
+			this.logger.error("群发错误IOException:{}", e.getMessage());
 		} catch (WxErrorException e) {
-			this.logger.debug("群发出错2:" + e.getMessage());
-			this.logger.debug("群发出错2:再次重发");
+			this.logger.error("群发出错:WxErrorException:{}", e.getMessage());
 		}
 	}
 }

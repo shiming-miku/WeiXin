@@ -16,5 +16,5 @@ public interface DmzjDAO {
      * 获取5条当天的数据
      * @return list
      */
-    List<Dmzj> listFive();
+    List<Dmzj> listFive(String date);
 }
