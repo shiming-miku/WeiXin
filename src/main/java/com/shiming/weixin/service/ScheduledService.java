@@ -136,15 +136,17 @@ public class ScheduledService extends AbstractService {
 					}
 				}
 			}
-			WxMpMassPreviewMessage massPreviewMessage = new WxMpMassPreviewMessage();
-			massPreviewMessage.setMsgType(WxConsts.MassMsgType.MPNEWS);
-			massPreviewMessage.setMediaId(massUploadResult.getMediaId());
-			massPreviewMessage.setToWxUserOpenid("oJ6Mw1U4RIp5F3LRO8DPL_AxTjn8");
-			WxMpMassSendResult massResult = wxMpService.getMassMessageService().massMessagePreview(massPreviewMessage);
-			this.logger.info("群发结果1:{}", massResult.getErrorMsg());
-			massPreviewMessage.setToWxUserOpenid("oJ6Mw1b21hOfBVkb3MrNYasVItWw");
-			WxMpMassSendResult massResultOther = wxMpService.getMassMessageService().massMessagePreview(massPreviewMessage);
-			this.logger.info("群发结果2:{}", massResultOther.getErrorMsg());
+			if (null != massUploadResult) {
+				WxMpMassPreviewMessage massPreviewMessage = new WxMpMassPreviewMessage();
+				massPreviewMessage.setMsgType(WxConsts.MassMsgType.MPNEWS);
+				massPreviewMessage.setMediaId(massUploadResult.getMediaId());
+				massPreviewMessage.setToWxUserOpenid("oJ6Mw1U4RIp5F3LRO8DPL_AxTjn8");
+				WxMpMassSendResult massResult = wxMpService.getMassMessageService().massMessagePreview(massPreviewMessage);
+				this.logger.info("群发结果1:{}", massResult.getErrorMsg());
+				massPreviewMessage.setToWxUserOpenid("oJ6Mw1b21hOfBVkb3MrNYasVItWw");
+				WxMpMassSendResult massResultOther = wxMpService.getMassMessageService().massMessagePreview(massPreviewMessage);
+				this.logger.info("群发结果2:{}", massResultOther.getErrorMsg());
+			}
 		} catch (IOException e) {
 			this.logger.error("群发错误IOException:{}", e.getMessage());
 		} catch (WxErrorException e) {
