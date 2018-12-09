@@ -81,7 +81,7 @@ public class ScheduledService extends AbstractService {
 				article.setThumbMediaId(uploadMediaRes.getMediaId());
 				article.setShowCoverPic(false);
 				article.setAuthor("动漫之家");
-				article.setContent(ZZZM + "<br>");
+				article.setContent(ZZZM);
 				article.setContentSourceUrl(dmzj.getUrl());
 				article.setDigest("动漫之家");
 				List<Content> contentList = contentDao.listByUrl(dmzj);
@@ -104,15 +104,15 @@ public class ScheduledService extends AbstractService {
 						// 上传图文消息的正文图片(返回的url拼在正文的<img>标签中)
 						try {
 							WxMediaImgUploadResult imagedMediaRes = wxMpService.getMaterialService().
-									mediaImgUpload(tmpFile);
-							article.setContent(article.getContent() + "<img src=" + imagedMediaRes.getUrl() + "><br>");
+								mediaImgUpload(tmpFile);
+							article.setContent(article.getContent() + IMG_STYLE_START + "<img src="
+								+ imagedMediaRes.getUrl() + ">" + IMG_STYLE_END);
 						} catch (WxErrorException e) {
 							this.logger.error("上传正文图片出错{}", e.getMessage());
 						}
 					} catch (IOException e) {
 						this.logger.info("获取的是正文，不是图片，拼接正文");
-						article.setContent(article.getContent() + P_STYLE_START + content.getText() + P_STYLE_END
-							+ "<br>");
+						article.setContent(article.getContent() + P_STYLE_START + content.getText() + P_STYLE_END);
 					}
 
 				}

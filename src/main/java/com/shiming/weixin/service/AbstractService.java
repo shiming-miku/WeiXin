@@ -18,6 +18,8 @@ public class AbstractService {
 	protected final String DMZJ = "动漫之家-新闻 ";
  	protected final String ZZZM = "<section style=\"text-align: center;color: mediumblue;font-size: 17px;margin-bottom: 25px;font-family:SourceHanSansCN, Hiragino Sans GB, Microsoft YaHei, Helvetica Neue, Arial, Helvetica, DINAlternate-Bold,Serif;white-space: normal;background-color: rgb(255, 255, 255);\"><span>本消息内容来源于《动漫之家 https://news.dmzj.com》</span></section>";
     protected final String P_STYLE_END = "</p>";
+    protected final String IMG_STYLE_START = "<p style=\"text-align: center;margin-bottom: 25px;\">";
+    protected final String IMG_STYLE_END = "</p>";
 	/**
 	 *  微信群发消息news上传出错重新上传次数
 	 */
