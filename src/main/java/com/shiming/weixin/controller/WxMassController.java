@@ -1,7 +1,13 @@
 package com.shiming.weixin.controller;
 
+import com.shiming.weixin.config.WxMpConfiguration;
+import com.shiming.weixin.config.WxMpProperties;
 import com.shiming.weixin.dao.DmzjDAO;
-import com.shiming.weixin.domain.Dmzj;
+import me.chanjar.weixin.common.api.WxConsts;
+import me.chanjar.weixin.common.error.WxErrorException;
+import me.chanjar.weixin.mp.api.WxMpService;
+import me.chanjar.weixin.mp.bean.WxMpMassPreviewMessage;
+import me.chanjar.weixin.mp.bean.result.WxMpMassSendResult;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,10 +21,6 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.List;
-
 /**
  * @author shiming-kirino 2018/11/9 10:48
  */
@@ -28,6 +30,9 @@ public class WxMassController {
 
     @Autowired
     private DmzjDAO dmzjDAO;
+
+    @Autowired
+    private WxMpProperties properties;
 
     @RequestMapping(value="/mass.html",method= RequestMethod.GET)
     public String mass(){
@@ -64,10 +69,15 @@ public class WxMassController {
     @RequestMapping(value="/testDao.html",method = RequestMethod.POST)
     @ResponseBody
     public String testDao(){
-        SimpleDateFormat sdfmy = new SimpleDateFormat("yyyy-MM-dd");
-        List<Dmzj> dmzjList = dmzjDAO.listFive(sdfmy.format(Calendar.getInstance().getTime()));
-        for (Dmzj dmzj:dmzjList) {
-            System.out.println(dmzj.toString());
+        try {
+            WxMpService wxMpService = WxMpConfiguration.getMpServices().get(properties.getConfigs().get(0).getAppId());
+            WxMpMassPreviewMessage massPreviewMessage = new WxMpMassPreviewMessage();
+            massPreviewMessage.setMsgType(WxConsts.MassMsgType.TEXT);
+            massPreviewMessage.setContent("测试群发消息\n欢迎欢迎，热烈欢迎\n换行测试\n超链接:<a href=\"http://www.baidu.com\">Hello World</a>");
+            massPreviewMessage.setToWxUserOpenid("oJ6Mw1U4RIp5F3LRO8DPL_AxTjn8");
+            WxMpMassSendResult massResult = wxMpService.getMassMessageService().massMessagePreview(massPreviewMessage);
+        } catch (WxErrorException e) {
+            e.printStackTrace();
         }
         return "success";
     }

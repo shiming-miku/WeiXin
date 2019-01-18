@@ -17,8 +17,8 @@ import java.util.List;
 public class WxMpProperties {
     private List<MpConfig> configs;
 
-    @Data
-    public static class MpConfig {
+	@Data
+	public static class MpConfig {
         /**
          * 设置微信公众号的appid
          */
@@ -38,6 +38,17 @@ public class WxMpProperties {
          * 设置微信公众号的EncodingAESKey
          */
         private String aesKey;
+
+        /**
+         * 设置正式环境，测试环境
+         * true-正式环境，false-测试环境
+         */
+        private String isFormal;
+
+        /**
+         * 群发失败重发次数
+         */
+        private Integer size;
     }
 
     @Override

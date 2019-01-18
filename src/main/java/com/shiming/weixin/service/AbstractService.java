@@ -13,15 +13,17 @@ import java.text.SimpleDateFormat;
  */
 public class AbstractService {
 	protected Logger logger = LoggerFactory.getLogger(getClass());
-	protected SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-	protected final String P_STYLE_START = "<p style=\"line-height: 30px;font-size: 17px;color: rgb(37, 53, 69);margin-bottom: 25px;font-family:SourceHanSansCN, Hiragino Sans GB, Microsoft YaHei, Helvetica Neue, Arial, Helvetica, DINAlternate-Bold,Serif;white-space: normal;background-color: rgb(255, 255, 255);text-indent: 2em;\">";
-	protected final String DMZJ = "动漫之家-新闻 ";
- 	protected final String ZZZM = "<section style=\"text-align: center;color: mediumblue;font-size: 17px;margin-bottom: 25px;font-family:SourceHanSansCN, Hiragino Sans GB, Microsoft YaHei, Helvetica Neue, Arial, Helvetica, DINAlternate-Bold,Serif;white-space: normal;background-color: rgb(255, 255, 255);\"><span>本消息内容来源于《动漫之家 https://news.dmzj.com》</span></section>";
-    protected final String P_STYLE_END = "</p>";
-    protected final String IMG_STYLE_START = "<p style=\"text-align: center;margin-bottom: 25px;\">";
-    protected final String IMG_STYLE_END = "</p>";
+	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	final String P_STYLE_START = "<p style=\"line-height: 30px;font-size: 17px;color: rgb(37, 53, 69);margin-bottom: 25px;font-family:SourceHanSansCN, Hiragino Sans GB, Microsoft YaHei, Helvetica Neue, Arial, Helvetica, DINAlternate-Bold,Serif;white-space: normal;background-color: rgb(255, 255, 255);text-indent: 2em;\">";
+	final String DMZJ = "动漫之家-新闻 ";
+ 	final String ZZZM = "<section style=\"text-align: center;color: mediumblue;font-size: 17px;margin-bottom: 25px;font-family:SourceHanSansCN, Hiragino Sans GB, Microsoft YaHei, Helvetica Neue, Arial, Helvetica, DINAlternate-Bold,Serif;white-space: normal;background-color: rgb(255, 255, 255);\"><span>本消息内容来源于《动漫之家 https://news.dmzj.com》</span></section>";
+ 	final String P_STYLE_END = "</p>";
+ 	final String IMG_STYLE_START = "<p style=\"text-align: center;margin-bottom: 25px;\">";
+ 	final String IMG_STYLE_END = "</p>";
+ 	final String AUTHOR = "搬运君";
+ 	final String DIGEST = "新闻资讯";
 	/**
-	 *  微信群发消息news上传出错重新上传次数
+	 * 正式环境-true
 	 */
-    protected final Integer SIZE = 5;
+	final String FORMAL_TRUE = "true";
 }

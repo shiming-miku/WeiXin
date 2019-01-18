@@ -49,7 +49,7 @@ public class MsgHandler extends AbstractHandler {
         String content = "功能完善中/::D";
         // 以下是自己的实现 2018-11-09
         if("菜鸡".equals(inputContent)){
-           content = "说菜鸡的人才是菜鸡[Smirk]";
+           content = "/::~";
         }
 
         return new TextBuilder().build(content, wxMessage, weixinService);

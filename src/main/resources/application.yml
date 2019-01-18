@@ -18,14 +18,18 @@ mybatis:
 wx:
     mp:
         configs:
-        - appId: wxf1d54041d3466d9a
-          secret: b67930b0498890eb414c717d1ac67ec4
+        - appId: wxc0335db37a5c80a0
+          secret: 5b6b6462b7e11f403a03d3ba7e808f05
           token: shiming
           aesKey: shiming
-        - appId:
-          secret:
+          isFormal: true
+          size: 5
+        - appId: wxf1d54041d3466d9a
+          secret: b67930b0498890eb414c717d1ac67ec4
           token:
           aesKey:
+          isFormal:
+          size:
 server:
     servlet:
         context-path: /
