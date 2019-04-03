@@ -1,5 +1,6 @@
 package com.shiming.weixin.handler;
 
+import com.shiming.weixin.builder.NewsBuilder;
 import com.shiming.weixin.builder.TextBuilder;
 import com.shiming.weixin.utils.JsonUtils;
 import me.chanjar.weixin.common.error.WxErrorException;
@@ -8,6 +9,7 @@ import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlMessage;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlOutMessage;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
@@ -19,6 +21,9 @@ import static me.chanjar.weixin.common.api.WxConsts.XmlMsgType;
  */
 @Component
 public class MsgHandler extends AbstractHandler {
+
+	@Autowired
+	private NewsBuilder newsBuilder;
 
     @Override
     public WxMpXmlOutMessage handle(WxMpXmlMessage wxMessage,
@@ -50,6 +55,8 @@ public class MsgHandler extends AbstractHandler {
         // 以下是自己的实现 2018-11-09
         if("菜鸡".equals(inputContent)){
            content = "/::~";
+        } else if ("消息".equals(inputContent)) {
+            return newsBuilder.build(content, wxMessage, weixinService);
         }
 
         return new TextBuilder().build(content, wxMessage, weixinService);
